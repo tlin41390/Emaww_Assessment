@@ -1,7 +1,15 @@
 import redis
 import json
 import xml.etree.ElementTree as ET
+import argparse
+
 def main():
+    #Parse the arguments
+    parser = argparse.ArgumentParser(description="Process XML and store data in Redis.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print all keys saved to Redis")
+    parser.add_argument("xml_path", help="Path to the XML file")
+    args = parser.parse_args()
+    
     #Get the xml file
     tree = ET.parse('config.xml')
     root = tree.getroot()
@@ -25,4 +33,11 @@ def main():
         key = "cookie:"+cookie['name']+":"+cookie['host']
         redis_client.set(key, cookie_elem.text.strip())
         
-main()
+    if args.verbose:
+        all_keys = redis_client.keys('*')
+        print("All keys saved in Redis:")
+        for key in all_keys:
+            print(key)
+        
+if __name__ == "__main__":
+    main()
