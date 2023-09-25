@@ -33,6 +33,7 @@ def main():
         key = "cookie:"+cookie['name']+":"+cookie['host']
         redis_client.set(key, cookie_elem.text.strip())
         
+    #check if the verbose flag is set and print all the keys in the database
     if args.verbose:
         all_keys = redis_client.keys('*')
         print("All keys saved in Redis:")
